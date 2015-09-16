@@ -5,8 +5,6 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 
-var routes = require('./routes/index');
-var users = require('./routes/users');
 
 var app = express();
 
@@ -22,8 +20,38 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/', routes);
+
+app.get('*', function(req, res) {
+  console.log(req.url)
+  var url = req.url;
+    if(url === "/") {
+      url = "/index.html";
+    }
+    fs.readFile(__dirname + url, function (err,data) {
+    if (err) {
+      res.writeHead(404);
+      res.end(JSON.stringify(err));
+      return;
+    }
+    else {
+        res.writeHead(200);
+    }
+    console.log("serving file: " + url);
+    res.end(data);
+  });
+  res.send(200);
+})
+
+app.use('*', function(req, res) {
+
+});
+/*var routes = require('./routes/index');
+var users = require('./routes/users');
+var tracked = require('./routes/tracked');
+
+app.use('*', routes);
 app.use('/users', users);
+app.use('/tracked', tracked);*/
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -38,6 +66,7 @@ app.use(function(req, res, next) {
 // will print stacktrace
 if (app.get('env') === 'development') {
   app.use(function(err, req, res, next) {
+    console.log("500 error");
     res.status(err.status || 500);
     res.render('error', {
       message: err.message,
@@ -50,10 +79,11 @@ if (app.get('env') === 'development') {
 // no stacktraces leaked to user
 app.use(function(err, req, res, next) {
   res.status(err.status || 500);
-  res.render('error', {
-    message: err.message,
-    error: {}
-  });
+  // res.render('error', {
+  //   message: err.message,
+  //   error: {}
+  // });
+  console.log(err.message);
 });
 
 

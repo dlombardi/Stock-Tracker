@@ -25,13 +25,12 @@ stockApp.controller('mainController', function($scope){
   // $scope.message = "Everyone come and see how good I look";
 });
 
-stockApp.controller('addStockController', function($scope, stockService){
+stockApp.controller('addStockController', function($scope, stockService, trackService){
 
-  $scope.companies = [];
-  $scope.addCompany = function(){
-    $scope.companies.push($scope.company);
-    console.log($scope.companies);
+  $scope.trackStock = function(stockItem) {
+    trackService.trackStock(stockItem);
   };
+
   $scope.trackInput = function(){
     stockService.getStocks($scope.company)
     .success(function(data){
@@ -39,6 +38,8 @@ stockApp.controller('addStockController', function($scope, stockService){
       console.log($scope.stockList);
     });
   }
+
+
 });
 
 stockApp.controller('listQuotesController', function($scope){
@@ -52,7 +53,13 @@ stockApp.service("stockService", function($http){
     return $http.jsonp(`http://dev.markitondemand.com/Api/v2/Lookup/jsonp?input=${company}&callback=JSON_CALLBACK`)
   }
 });
-
-// stockApp.service("trackService", function($http){
-//   this.
-// });
+//
+stockApp.service("trackService", function($http){
+  this.trackStock = function(stockItem){
+    console.log(stockItem);
+    $http.post('/tracked', stockItem)
+    .success(function(data){
+      console.log(data);
+    });
+  }
+});
