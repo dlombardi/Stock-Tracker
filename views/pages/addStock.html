@@ -1,0 +1,10 @@
+<div class="jumbotron text-center">
+  <h1>Add Stocks</h1>
+  <div class="row">
+    <input ng-keypress="trackInput()" ng-model="company" type="text">
+    <button ng-click="addCompany()" class="btn btn-default">Add</button>
+        <ul>
+          <li ng-repeat="stockItem in stockList track by $index"><a ng-click="trackStock(stockItem)"  href="">{{stockItem.Name}}</a></li>
+        </ul>
+  </div>
+</div>
